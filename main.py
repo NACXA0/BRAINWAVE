@@ -91,7 +91,7 @@ def DATA(COM):#每秒一次的解析数据
             #Chick_count = data[62:64]#校验和.这个目前看来没有什么意义
             return Signal, Delta, Theta, LowAlpha, HighAlpha, LowBeta, HighBeta, LowGamma, MiddleGamma, Attention, Meditation#, Chick_count
 
-
+'''
 def DRAW(rawdata, Signal, Delta):#, Theta, LowAlpha, HighAlpha, LowBeta, HighBeta, LowGamma, MiddleGamma, Attention, Meditation):#下面是实时绘图
     #matplotlib.rcParams['font.sans - serif']=['SimHei']#用来正常显示中文标签
     # 创建实时绘制横纵轴变量
@@ -136,14 +136,10 @@ def DRAW(rawdata, Signal, Delta):#, Theta, LowAlpha, HighAlpha, LowBeta, HighBet
     plt.plot(x, y_rawdata)# * np.array([-1]))  # 画出当前x列表和y列表中的值的图形
 
 
-
-
-
-
     plt.pause(0.001)  # 暂停一段时间，不然画的太快会卡住显示不出来
     plt.show()  # 更新图像.否则一会就会卡死
     #plt.ioff()  # 关闭画图窗口
-
+'''
 
 
 #time = 0
@@ -168,15 +164,52 @@ while True:
     if DATA(msg_data) != None:#第513个数据包是校验位。如果不是没数据就输出
         Signal, Delta, Theta, LowAlpha, HighAlpha, LowBeta, HighBeta, LowGamma, MiddleGamma, Attention, Meditation = DATA(msg_data)
         print(Signal, Delta, Theta, LowAlpha, HighAlpha, LowBeta, HighBeta, LowGamma, MiddleGamma, Attention, Meditation)
+
     HEX = COM2HEX(msg_data)
     if CHICK(int(HEX[0:2], 16),int(HEX[2:4], 16),int(HEX[4:6], 16)) == True:#校验位，用来忽略丢包。错误就重新获取
         rawdata = RAWDATA(HEX)
-        DRAW(rawdata, Signal, Delta)#, Theta, LowAlpha, HighAlpha, LowBeta, HighBeta, LowGamma, MiddleGamma, Attention, Meditation)#绘图
+        #DRAW(rawdata, Signal, Delta)#, Theta, LowAlpha, HighAlpha, LowBeta, HighBeta, LowGamma, MiddleGamma, Attention, Meditation)#绘图
 
+        '''直接在程序里面绘图'''
+        #matplotlib.rcParams['font.sans - serif']=['SimHei']#用来正常显示中文标签
+        # 创建绘制实时损失的动态窗口
+        plt.ion()
+        # 创建循环
+        x.append(time.time())  # 添加i到x轴的数据中
+        y_rawdata.append(rawdata)  # 添加i的平方到y轴的数据中
+        #if True:  # Signal and Delta != None:#and Theta and LowAlpha and HighAlpha and LowBeta and HighBeta and LowGamma and MiddleGamma and Attention and Meditation != None:
+        #    y_Signal.append(Signal)
+        #    y_Delta.append(Delta)
+            # y_Theta.append(Theta)
+            # y_LowAlpha.append(LowAlpha)
+            # y_HighAlpha.append(HighAlpha)
+            # y_LowBeta.append(LowBeta)
+            # y_HighBeta.append(HighBeta)
+            # y_LowGamma.append(LowGamma)
+            # y_MiddleGamma.append(MiddleGamma)
+            # y_Attention.append(Attention)
+            # y_Meditation.append(Meditation)
+            #print(y_Signal,y_Delta)  # , y_Theta, y_LowAlpha, y_HighAlpha, y_LowBeta, y_HighBeta, y_LowGamma, y_MiddleGamma, y_Attention, y_Meditation)
+            #plt.bar(x, [y_Signal[-1], y_Delta[-1]])  # , y_Theta[-1], y_LowAlpha[-1], y_HighAlpha[-1], y_LowBeta[-1], y_HighBeta[-1],y_LowGamma[-1], y_MiddleGamma[-1], y_Attention[-1], y_Meditation[-1]], width=0.1, color='g', alpha=0.5)
 
+        if len(y_rawdata) > 50:  # 限制x轴的长度。根据某个横轴的值判断
+            y_rawdata.pop(0)
+            #y_Signal.pop(0)
+            #y_Delta.pop(0)
+            # y_Theta.pop(0)
+            # y_LowAlpha.pop(0)
+            # y_HighAlpha.pop(0)
+            # y_LowBeta.pop(0)
+            # y_HighBeta.pop(0)
+            # y_LowGamma.pop(0)
+            # y_MiddleGamma.pop(0)
+            # y_Attention.pop(0)
+            # y_Meditation.pop(0)
 
+            plt.clf()  # 清除之前画的图
+        plt.plot(x, y_rawdata)  # * np.array([-1]))  # 画出当前x列表和y列表中的值的图形
 
-
-
-
+        plt.pause(0.001)  # 暂停一段时间，不然画的太快会卡住显示不出来
+        plt.show()  # 更新图像.否则一会就会卡死
+        # plt.ioff()  # 关闭画图窗口
 
