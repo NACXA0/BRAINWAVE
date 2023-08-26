@@ -1,5 +1,8 @@
 '''这个要实现对脑波的实时读取与分析/脑波存储并做长期的分析'''
 '''这是一个深入报神经研究的长期的项目'''
+COM = 'COM5' #端口号
+BAUD = 9600 #波特率
+
 len_data = 25#大包同时显示数量
 len_rawdata = 50#小包同时显示数量
 save = False    #是否保存数据
@@ -33,9 +36,9 @@ def blue2COM():#蓝牙转串口
     #sock.close()
 '''
 
-def read_COM(COM, BAUD):#读取串口信息
+def read_COM(com, baud):#读取串口信息
     # 打开串口
-    ser = serial.Serial(port=COM, baudrate=BAUD, timeout=1)#'COM3',9600串口号，波特率
+    ser = serial.Serial(port=com, baudrate=baud, timeout=1)#'COM3',9600串口号，波特率
     # 读取hex消息
     try:
         while True:
@@ -145,13 +148,14 @@ while True:
 
 
     #1读取串口信息
-    msg_data = read_COM('COM5',9600)#读取串口信息
+    msg_data = read_COM(COM, BAUD)#读取串口信息
     #2当获取到大数据包时的操作+数据准备
     if DATA(msg_data) != None:#第513个数据包是校验位。如果不是没数据就输出
+        print('AAAAAAAAAAAA')
         x_data.append(time.time())  # X横轴是时间.这个是大数据包的时间
 
         Signal, Delta, Theta, LowAlpha, HighAlpha, LowBeta, HighBeta, LowGamma, MiddleGamma, Attention, Meditation = DATA(msg_data)
-        #print(Signal, Delta, Theta, LowAlpha, HighAlpha, LowBeta, HighBeta, LowGamma, MiddleGamma, Attention, Meditation)
+        print(Signal, Delta, Theta, LowAlpha, HighAlpha, LowBeta, HighBeta, LowGamma, MiddleGamma, Attention, Meditation)
         # 如果有数据的话就添加上
         y_Signal.append(Signal)
         y_Delta.append(Delta)
